@@ -1,0 +1,13 @@
+import {useState} from "react";
+import {Link,useNavigate} from "react-router-dom";
+import {Plane,User,Mail,Lock,ArrowRight} from "lucide-react";
+import {registerUser} from "../api/authApi";
+import {getErrorMessage} from "../utils/errors";
+export default function Register(){
+ const [form,setForm]=useState({fullName:"",email:"",password:""}),[error,setError]=useState(""),[loading,setLoading]=useState(false),navigate=useNavigate();
+ function update(e){setForm({...form,[e.target.name]:e.target.value});}
+ async function submit(e){e.preventDefault();setError("");setLoading(true);try{await registerUser(form);navigate("/login",{state:{message:"Account created successfully. Please sign in."}});}catch(err){setError(getErrorMessage(err,"Unable to create your account."));}finally{setLoading(false);}}
+ return <div className="auth-page"><div className="auth-decoration"><div className="auth-orbit orbit-one"/><div className="auth-orbit orbit-two"/><div className="auth-brand"><span className="brand-mark"><Plane size={21}/></span> Trip<span>Sync</span></div><div className="auth-promo"><span className="eyebrow">YOUR TRAVEL, IN SYNC</span><h1>Make memories, not messy plans.</h1><p>Plan trips, share itineraries and keep group expenses organised.</p><div className="promo-dots"><i/><i/><i/></div></div></div>
+ <div className="auth-panel"><div className="auth-form-wrap"><div className="auth-mobile-brand"><span className="brand-mark"><Plane size={19}/></span> Trip<span>Sync</span></div><span className="eyebrow blue-eyebrow">GET STARTED</span><h2>Create your account</h2><p className="muted">Join TripSync and start planning together.</p>{error&&<div className="alert error-alert">{error}</div>}
+ <form onSubmit={submit} className="form-stack"><label>Full name</label><div className="input-wrap"><User size={18}/><input name="fullName" placeholder="Your full name" maxLength="100" value={form.fullName} onChange={update} required/></div><label>Email address</label><div className="input-wrap"><Mail size={18}/><input type="email" name="email" placeholder="you@example.com" maxLength="150" value={form.email} onChange={update} required/></div><label>Password</label><div className="input-wrap"><Lock size={18}/><input type="password" name="password" placeholder="At least 8 characters" minLength="8" maxLength="72" value={form.password} onChange={update} required/></div><button className="btn btn-primary btn-full" disabled={loading}>{loading?"Creating account...":"Create account"} <ArrowRight size={17}/></button></form><p className="auth-switch">Already have an account? <Link to="/login">Sign in</Link></p></div></div></div>;
+}

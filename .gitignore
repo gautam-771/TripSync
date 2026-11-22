@@ -1,0 +1,21 @@
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# IDE
+.idea/
+**/.idea/
+
+# Java / Maven
+**/target/
+
+# React / Node
+**/node_modules/
+**/dist/
+
+# Uploaded files
+uploads/
+
+# Logs
+*.log
