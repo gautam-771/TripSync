@@ -36,53 +36,56 @@ TripSync follows a layered backend architecture. The React frontend communicates
 
 ```mermaid
 %%{init: {
-  "theme": "dark",
-  "themeVariables": {
-    "darkMode": true,
-    "background": "#000000",
-    "primaryColor": "#2563EB",
-    "primaryTextColor": "#FFFFFF",
-    "primaryBorderColor": "#60A5FA",
-    "lineColor": "#60A5FA",
-    "clusterBkg": "#081226",
-    "clusterBorder": "#3B82F6"
+  'theme': 'base',
+  'themeVariables': {
+    'background': '#000000',
+    'primaryColor': '#050b1a',
+    'primaryTextColor': '#ffffff',
+    'primaryBorderColor': '#3b82f6',
+    'lineColor': '#9ca3af',
+    'secondaryColor': '#050b1a',
+    'tertiaryColor': '#050b1a',
+    'clusterBkg': '#030816',
+    'clusterBorder': '#2563eb'
   }
 }}%%
-flowchart TB
-    USER(["User"]):::blueBox
+flowchart TD
+    User([User])
 
-    subgraph FRONTEND["React Frontend"]
+    subgraph Frontend ["React Frontend"]
         direction TB
-        UI["React User Interface"]:::blueBox
-        PAGES["Dashboard | Trips | Invitations"]:::blueBox
-        FEATURES["Itinerary | Documents | Expenses"]:::blueBox
+        F1["Dashboard<br/>Trips / Invitations"]
+        F2["Itinerary<br/>Documents / Expenses"]
     end
 
-    subgraph BACKEND["Spring Boot Backend"]
+    HTTP["HTTP Request (with JWT<br/>Token)"]
+
+    subgraph Backend ["Spring Boot Backend"]
         direction TB
-        CONTROLLER["Controller Layer"]:::blueBox
-        SECURITY["Spring Security + JWT"]:::blueBox
-        SERVICE["Service Layer"]:::blueBox
-        REPOSITORY["Repository Layer"]:::blueBox
+        Sec["Spring Security + JWT<br/>(Authenticate & Authorize<br/>Request)"]
+        Ctrl["Controller Layer<br/>(Handle Request)"]
+        Svc["Service Layer<br/>(Business Logic)"]
+        Repo["Repository Layer<br/>(Database Operations)"]
+
+        Sec --> Ctrl
+        Ctrl --> Svc
+        Svc --> Repo
     end
 
-    DB[("MySQL Database")]:::blueBox
-    EMAIL["Email Service (SMTP)"]:::blueBox
+    DB[(MySQL Database)]
 
-    USER --> UI
-    UI --> PAGES
-    UI --> FEATURES
-    PAGES --> CONTROLLER
-    FEATURES --> CONTROLLER
-    CONTROLLER --> SECURITY
-    SECURITY --> SERVICE
-    SERVICE --> REPOSITORY
-    REPOSITORY --> DB
-    SERVICE --> EMAIL
+    User --> F1
+    User --> F2
+    F1 --> HTTP
+    F2 --> HTTP
+    HTTP --> Backend
+    Repo --> DB
 
-    classDef blueBox fill:#2563EB,stroke:#60A5FA,stroke-width:1.5px,color:#FFFFFF
-    style FRONTEND fill:#081226,stroke:#3B82F6,stroke-width:1.5px,color:#FFFFFF
-    style BACKEND fill:#081226,stroke:#3B82F6,stroke-width:1.5px,color:#FFFFFF
+    classDef darkBox fill:#050b1a,stroke:#3b82f6,stroke-width:2px,color:#ffffff;
+    classDef subgraphStyle fill:#030816,stroke:#2563eb,stroke-width:2px,color:#ffffff;
+
+    class User,F1,F2,HTTP,Sec,Ctrl,Svc,Repo,DB darkBox;
+    class Frontend,Backend subgraphStyle;
 ```
 
 
